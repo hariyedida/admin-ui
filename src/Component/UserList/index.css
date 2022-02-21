@@ -1,0 +1,28 @@
+table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+th {
+	text-align: left;
+	height: 30px;
+	vertical-align: middle;
+	max-width: 120px;
+}
+
+tr {
+	border-bottom: solid 1px rgb(202, 200, 200);
+}
+
+td {
+	padding: 15px 0px 15px 0px;
+	max-width: 120px;
+	min-width: 120px;
+	height: 40px;
+}
+
+button {
+	background-color: transparent;
+	border: none;
+	outline: none;
+}
