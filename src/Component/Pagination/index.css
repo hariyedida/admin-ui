@@ -1,0 +1,17 @@
+ul {
+	list-style-type: none;
+	padding: 0px;
+	display: flex;
+	width: fit-content;
+	border: solid 1px rgb(202, 200, 200);
+	border-right: none;
+}
+
+li {
+	padding: 5px;
+	border-right: solid 1px rgb(202, 200, 200);
+}
+
+.active {
+	background-color: red;
+}

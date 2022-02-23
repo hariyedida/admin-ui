@@ -1,14 +1,13 @@
 import React, { Component } from "react";
 import apiStatusConstants from "../API_Status_Constants";
 import Loader from "react-loader-spinner";
+// import Pagination from "./Pagination";
 import UserDetails from "./UserDetails";
 
 class FetchApi extends Component {
 	state = {
 		apiStaus: apiStatusConstants.initial,
 		userList: [],
-		activePage: 1,
-		totalPages: 1,
 	};
 
 	componentDidMount = () => {
@@ -16,20 +15,15 @@ class FetchApi extends Component {
 	};
 
 	getAllUserDetails = async () => {
-		const { activePage, serachInput } = this.state;
-		const Limit = 10;
-		const Offset = (activePage - 1) * Limit;
 		this.setState({ apiStatus: apiStatusConstants.inProgress });
-
 		const apiUrl = `https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json`;
 		const response = await fetch(apiUrl);
 		if (response.ok) {
 			const fetchedData = await response.json();
-			const totalPages = Math.ceil(fetchedData.length / Limit);
+
 			this.setState({
 				apiStatus: apiStatusConstants.success,
 				userList: fetchedData,
-				totalPages,
 			});
 		} else {
 			this.setState({ apiStatus: apiStatusConstants.failure });
@@ -37,8 +31,8 @@ class FetchApi extends Component {
 	};
 
 	renderSuccesAdminUi = () => {
-		const { userList } = this.state;
-		return <UserDetails userList={userList} />;
+		const { userList, totalPages } = this.state;
+		return <UserDetails userList={userList} totalPages={totalPages} />;
 	};
 
 	renderFailureView = () => (
