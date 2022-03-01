@@ -74,15 +74,17 @@ class UserDetails extends Component {
 
 	saveEditedUserDetails = (event) => {
 		event.preventDefault();
-		const { updateUserData, userList } = this.state;
-		const newUserList = [...userList];
+		const { updateUserData, userList, fetchUserList } = this.state;
+		const newUserList = [...fetchUserList];
 		const updateUserIndex = newUserList.findIndex(
 			(eachUser) => eachUser.id === updateUserData.id
 		);
-
 		newUserList[updateUserIndex] = updateUserData;
 
-		this.setState({ userList: newUserList, editUserDataId: null });
+		this.setState(
+			{ fetchUserList: newUserList, editUserDataId: null },
+			this.UpdateList
+		);
 	};
 
 	cancelEditUserDetails = () => {
@@ -127,7 +129,6 @@ class UserDetails extends Component {
 
 	handlePageChange = (event) => {
 		const { totalPages, activePage } = this.state;
-		console.log(event.target.value);
 		switch (event.target.value) {
 			case "<<":
 				this.setState({ activePage: 1 }, this.componentDidMount);
@@ -205,47 +206,53 @@ class UserDetails extends Component {
 							</tr>
 						</thead>
 						<tbody>
-							{userList.map((eachUser) => (
-								<>
-									{editUserDataId === eachUser.id ? (
-										<EditUserDetails
-											key={updateUserData.id}
-											userDetails={updateUserData}
-											onChangeUserFormDetails={
-												this.onChangeUserFormDetails
-											}
-											cancelEditUserDetails={
-												this.cancelEditUserDetails
-											}
-										/>
-									) : (
-										<UserList
-											key={eachUser.id}
-											userDetails={eachUser}
-											onClickEditUserDetails={
-												this.onClickEditUserDetails
-											}
-											onClickDeleteUserDetails={
-												this.onClickDeleteUserDetails
-											}
-											handleCheckInput={this.handleCheckInput}
-											isChecked={
-												checkedUserIdDict[eachUser.id] === true
-													? true
-													: false
-											}
-										/>
-									)}
-								</>
-							))}
+							{userList.map((eachUser) => {
+								console.log(eachUser.id);
+								return (
+									<>
+										{editUserDataId === eachUser.id ? (
+											<EditUserDetails
+												key={eachUser.id}
+												userDetails={updateUserData}
+												onChangeUserFormDetails={
+													this.onChangeUserFormDetails
+												}
+												cancelEditUserDetails={
+													this.cancelEditUserDetails
+												}
+											/>
+										) : (
+											<UserList
+												key={eachUser.id}
+												userDetails={eachUser}
+												onClickEditUserDetails={
+													this.onClickEditUserDetails
+												}
+												onClickDeleteUserDetails={
+													this.onClickDeleteUserDetails
+												}
+												handleCheckInput={this.handleCheckInput}
+												isChecked={
+													checkedUserIdDict[eachUser.id] === true
+														? true
+														: false
+												}
+											/>
+										)}
+									</>
+								);
+							})}
 						</tbody>
 					</table>
 				</form>
-				<Pagination
-					totalPages={totalPages}
-					activePage={activePage}
-					handlePageChange={this.handlePageChange}
-				/>
+
+				<div className='pagination-container'>
+					<Pagination
+						totalPages={totalPages}
+						activePage={activePage}
+						handlePageChange={this.handlePageChange}
+					/>
+				</div>
 			</div>
 		);
 	}

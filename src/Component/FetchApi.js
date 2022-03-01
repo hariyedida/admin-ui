@@ -23,7 +23,7 @@ class FetchApi extends Component {
 
 			this.setState({
 				apiStatus: apiStatusConstants.success,
-				userList: fetchedData,
+				userList: [...fetchedData],
 			});
 		} else {
 			this.setState({ apiStatus: apiStatusConstants.failure });
