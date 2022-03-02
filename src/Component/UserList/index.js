@@ -10,7 +10,6 @@ function UserList(props) {
 		onClickEditUserDetails,
 		onClickDeleteUserDetails,
 		handleCheckInput,
-		isChecked,
 	} = props;
 	return (
 		<tr htmlFor={userDetails.id}>
@@ -19,9 +18,9 @@ function UserList(props) {
 					type='checkbox'
 					id={userDetails.id}
 					value={userDetails.id}
-					checked={isChecked}
+					checked={userDetails.checked}
 					onChange={(e) => {
-						handleCheckInput(userDetails.id, e);
+						handleCheckInput(e);
 					}}
 				/>
 			</td>

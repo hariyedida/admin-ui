@@ -17,7 +17,7 @@ class UserDetails extends Component {
 		updateUserData: { id: "", name: "", email: "", role: "" },
 		isCheckedAllUsers: false,
 		checkedUserIdDict: {},
-		deletedUserItems: null,
+		deletedUserItems: [],
 		totalPages: null,
 	};
 
@@ -104,27 +104,54 @@ class UserDetails extends Component {
 		);
 	};
 
-	handleAllCheckInput = (event) => {
+	selectAllusers = () => {
 		const { userList } = this.state;
-		let selectUsersIDDict = {};
-		if (event.target.checked) {
-			userList.forEach((eachUser) => {
-				selectUsersIDDict[eachUser.id] = event.target.checked;
-			});
-		} else {
-			selectUsersIDDict = {};
-		}
-
-		this.setState({ checkedUserIdDict: { ...selectUsersIDDict } });
+		this.setState(
+			(prevState) => {
+				return {
+					userList: userList.map((eachUser) => ({
+						...eachUser,
+						checked: !prevState.isCheckedAllUsers,
+					})),
+				};
+			},
+			() => {
+				// console.log("asdf");
+			}
+		);
 	};
 
-	handleCheckInput = (id, event) => {
-		const { checkedUserIdDict } = this.state;
-		let updatedDict = { ...checkedUserIdDict };
+	handleAllCheckInput = () => {
+		this.setState((prevState) => {
+			return {
+				isCheckedAllUsers: !prevState.isCheckedAllUsers,
+			};
+		}, this.selectAllusers());
+	};
 
-		updatedDict[id] = event.target.checked;
+	updateAllSelectCheckBox = () => {
+		const { userList } = this.state;
+		const allSelected = userList.map((eachUser) => eachUser.checked);
+		const allEqual = (arr) => arr.every((val) => val === true);
+		console.log(allEqual(allSelected));
+		if (allEqual(allSelected)) {
+			this.setState({ isCheckedAllUsers: true });
+		} else {
+			this.setState({ isCheckedAllUsers: false });
+		}
+	};
 
-		this.setState({ checkedUserIdDict: { ...updatedDict } });
+	handleCheckInput = (event) => {
+		const id = event.target.id;
+		this.setState((prevState) => {
+			return {
+				userList: prevState.userList.map((eachUser) =>
+					eachUser.id === id
+						? { ...eachUser, checked: !eachUser.checked }
+						: eachUser
+				),
+			};
+		}, this.updateAllSelectCheckBox);
 	};
 
 	handlePageChange = (event) => {
@@ -162,6 +189,34 @@ class UserDetails extends Component {
 		}
 	};
 
+	updateFetchedList = () => {
+		const { deletedUserItems, fetchUserList } = this.state;
+		const userId = deletedUserItems.map((eachId) => eachId.id);
+		const updatedUserList = fetchUserList.filter(
+			(user) => !userId.includes(user.id)
+		);
+		this.setState(
+			{ fetchUserList: [...updatedUserList] },
+			this.componentDidMount
+		);
+	};
+
+	deleteSelectedUsers = () => {
+		this.setState((prevState) => {
+			return {
+				userList: prevState.userList.filter(
+					(userDetails) => !userDetails.checked
+				),
+				isCheckedAllUsers: false,
+				deletedUserItems: [
+					...prevState.userList.map((eachUser) => {
+						return eachUser.checked === true ? eachUser : "";
+					}),
+				],
+			};
+		}, this.updateFetchedList);
+	};
+
 	render() {
 		const {
 			userList,
@@ -171,12 +226,8 @@ class UserDetails extends Component {
 			checkedUserIdDict,
 			totalPages,
 			activePage,
+			isCheckedAllUsers,
 		} = this.state;
-		let isCheckedAll = false;
-		if (Object.keys(checkedUserIdDict).length === userList.length) {
-			const dictValues = Object.values(checkedUserIdDict);
-			isCheckedAll = dictValues.includes(false) ? false : true;
-		}
 
 		return (
 			<div>
@@ -195,7 +246,7 @@ class UserDetails extends Component {
 										type='checkbox'
 										id='all'
 										value='all'
-										checked={isCheckedAll}
+										checked={isCheckedAllUsers}
 										onChange={this.handleAllCheckInput}
 									/>
 								</th>
@@ -207,7 +258,6 @@ class UserDetails extends Component {
 						</thead>
 						<tbody>
 							{userList.map((eachUser) => {
-								console.log(eachUser.id);
 								return (
 									<>
 										{editUserDataId === eachUser.id ? (
@@ -245,6 +295,11 @@ class UserDetails extends Component {
 						</tbody>
 					</table>
 				</form>
+				<div>
+					<button type='button' onClick={this.deleteSelectedUsers}>
+						Delete Selected
+					</button>
+				</div>
 
 				<div className='pagination-container'>
 					<Pagination

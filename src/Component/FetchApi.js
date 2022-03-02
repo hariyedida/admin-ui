@@ -20,10 +20,17 @@ class FetchApi extends Component {
 		const response = await fetch(apiUrl);
 		if (response.ok) {
 			const fetchedData = await response.json();
+			const updatedData = fetchedData.map((eachUser) => ({
+				email: eachUser.email,
+				id: eachUser.id,
+				name: eachUser.name,
+				role: eachUser.role,
+				checked: false,
+			}));
 
 			this.setState({
 				apiStatus: apiStatusConstants.success,
-				userList: [...fetchedData],
+				userList: [...updatedData],
 			});
 		} else {
 			this.setState({ apiStatus: apiStatusConstants.failure });
