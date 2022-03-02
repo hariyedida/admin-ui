@@ -12,7 +12,7 @@ class UserDetails extends Component {
 		activePage: 1,
 		itemsStart: null,
 		itemsEnd: null,
-		serachInput: "",
+		searchInput: "",
 		editUserDataId: null,
 		updateUserData: { id: "", name: "", email: "", role: "" },
 		isCheckedAllUsers: false,
@@ -22,8 +22,14 @@ class UserDetails extends Component {
 	};
 
 	componentDidMount = () => {
+		this.updateUIData();
+	};
+
+	updateUIData = () => {
 		const { fetchUserList, activePage } = this.state;
 		const Limit = 10;
+		console.log(fetchUserList);
+
 		const newItemsStart = (activePage - 1) * Limit;
 		const totalPages = Math.ceil(fetchUserList.length / Limit);
 		this.setState(
@@ -31,6 +37,7 @@ class UserDetails extends Component {
 				totalPages,
 				itemsStart: newItemsStart,
 				itemsEnd: newItemsStart + Limit,
+				searchInput: "",
 			},
 			this.updatedFetchedList
 		);
@@ -41,17 +48,39 @@ class UserDetails extends Component {
 		this.setState({ userList: fetchUserList.slice(itemsStart, itemsEnd) });
 	};
 
+	filterUserList = () => {
+		const { searchInput, fetchUserList } = this.state;
+		let serachUserList = fetchUserList;
+
+		serachUserList = serachUserList.filter((user) =>
+			Object.values(user).some((val) =>
+				JSON.stringify(val)
+					.toLowerCase()
+					.includes(searchInput.toLowerCase())
+			)
+		);
+
+		this.setState(
+			{ fetchUserList: [...serachUserList] },
+			this.updateUIData()
+		);
+	};
+
 	UpdateList = () => {
 		const { fetchUserList, deletedUserItems } = this.state;
 		const newUserList = fetchUserList.filter(
 			(eachId) => eachId.id !== deletedUserItems
 		);
 
-		this.setState({ fetchUserList: newUserList }, this.componentDidMount);
+		this.setState({ fetchUserList: newUserList }, this.updateUIData);
 	};
 
 	onChangeSearchInput = (event) => {
-		this.setState({ searchInput: event.target.value });
+		this.setState({ searchInput: event.target.value }, this.filterUserList());
+	};
+
+	onClickClearSearch = () => {
+		this.setState({ fetchUserList: this.props.userList }, this.updateUIData);
 	};
 
 	onClickEditUserDetails = (userDetails) => {
@@ -133,7 +162,7 @@ class UserDetails extends Component {
 		const { userList } = this.state;
 		const allSelected = userList.map((eachUser) => eachUser.checked);
 		const allEqual = (arr) => arr.every((val) => val === true);
-		console.log(allEqual(allSelected));
+
 		if (allEqual(allSelected)) {
 			this.setState({ isCheckedAllUsers: true });
 		} else {
@@ -158,33 +187,27 @@ class UserDetails extends Component {
 		const { totalPages, activePage } = this.state;
 		switch (event.target.value) {
 			case "<<":
-				this.setState({ activePage: 1 }, this.componentDidMount);
+				this.setState({ activePage: 1 }, this.updateUIData);
 				break;
 			case ">>":
-				this.setState({ activePage: totalPages }, this.componentDidMount);
+				this.setState({ activePage: totalPages }, this.updateUIData);
 				break;
 			case "<":
 				if (activePage > 1) {
 					const newActivePage = activePage - 1;
-					this.setState(
-						{ activePage: newActivePage },
-						this.componentDidMount
-					);
+					this.setState({ activePage: newActivePage }, this.updateUIData);
 				}
 				break;
 			case ">":
 				if (activePage < totalPages) {
 					const newActivePage = activePage + 1;
-					this.setState(
-						{ activePage: newActivePage },
-						this.componentDidMount
-					);
+					this.setState({ activePage: newActivePage }, this.updateUIData);
 				}
 				break;
 			default:
 				this.setState(
 					{ activePage: event.target.value },
-					this.componentDidMount
+					this.updateUIData
 				);
 		}
 	};
@@ -195,10 +218,7 @@ class UserDetails extends Component {
 		const updatedUserList = fetchUserList.filter(
 			(user) => !userId.includes(user.id)
 		);
-		this.setState(
-			{ fetchUserList: [...updatedUserList] },
-			this.componentDidMount
-		);
+		this.setState({ fetchUserList: [...updatedUserList] }, this.updateUIData);
 	};
 
 	deleteSelectedUsers = () => {
@@ -220,7 +240,7 @@ class UserDetails extends Component {
 	render() {
 		const {
 			userList,
-			serachInput,
+			searchInput,
 			editUserDataId,
 			updateUserData,
 			checkedUserIdDict,
@@ -230,14 +250,24 @@ class UserDetails extends Component {
 		} = this.state;
 
 		return (
-			<div>
+			<div className='admin-ui'>
 				<form onSubmit={this.saveEditedUserDetails}>
-					<input
-						type='search'
-						value={serachInput}
-						onChange={this.onChangeSearchInput}
-						placeholder='search by name,email,role'
-					/>
+					<div className='user-field-search-input-container'>
+						<input
+							type='search'
+							value={searchInput}
+							onChange={this.onChangeSearchInput}
+							placeholder='search by name,email,role'
+							className='user-field-search-input'
+						/>
+						<button
+							type='button'
+							onClick={this.onClickClearSearch}
+							className='user-field-clear-search-button'
+						>
+							clear
+						</button>
+					</div>
 					<table>
 						<thead>
 							<tr>
@@ -295,8 +325,12 @@ class UserDetails extends Component {
 						</tbody>
 					</table>
 				</form>
-				<div>
-					<button type='button' onClick={this.deleteSelectedUsers}>
+				<div className='delete-use-details-button-container'>
+					<button
+						type='button'
+						onClick={this.deleteSelectedUsers}
+						className='delete-user-details-button'
+					>
 						Delete Selected
 					</button>
 				</div>

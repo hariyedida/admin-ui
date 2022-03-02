@@ -36,3 +36,11 @@
 		transform: rotate(360deg);
 	}
 }
+
+* {
+	font-family: "roboto";
+}
+
+button {
+	cursor: pointer;
+}

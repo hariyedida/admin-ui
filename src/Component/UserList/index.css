@@ -1,13 +1,14 @@
 table {
 	border-collapse: collapse;
 	width: 100%;
+	table-layout: auto;
 }
 
 th {
 	text-align: left;
 	height: 30px;
 	vertical-align: middle;
-	max-width: 120px;
+	min-width: 80px;
 }
 
 tr {
@@ -15,14 +16,34 @@ tr {
 }
 
 td {
-	padding: 15px 0px 15px 0px;
-	max-width: 120px;
-	min-width: 120px;
+	padding: 8px 25px 8px 0px;
 	height: 40px;
+	word-wrap: break-word;
+}
+
+.check-box-input-field {
+	max-width: 120px;
+	min-width: 30px;
 }
 
 button {
 	background-color: transparent;
 	border: none;
 	outline: none;
+}
+
+@media screen and (min-width: 768px) {
+	th {
+		text-align: left;
+		height: 30px;
+		vertical-align: middle;
+		max-width: 120px;
+	}
+
+	td {
+		padding: 10px 0px 10px 0px;
+		max-width: 120px;
+		min-width: 120px;
+		height: 40px;
+	}
 }

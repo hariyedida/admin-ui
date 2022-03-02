@@ -3,15 +3,29 @@ ul {
 	padding: 0px;
 	display: flex;
 	width: fit-content;
-	border: solid 1px rgb(202, 200, 200);
+	/* border: solid 1px rgb(202, 200, 200); */
 	border-right: none;
 }
 
 li {
 	padding: 5px;
-	border-right: solid 1px rgb(202, 200, 200);
+	border: solid 1px rgb(202, 200, 200);
+	margin: 5px;
+	width: 20px;
+	height: 20px;
+	border-radius: 20px;
+	text-align: center;
+}
+
+.pagination-button {
+	width: 20px;
+	height: 20px;
+	margin: 0px;
+	padding: 0px;
+	border-radius: 20px;
+	border: none;
 }
 
 .active {
-	background-color: red;
+	background-color: rgba(39, 106, 144, 0.952);
 }

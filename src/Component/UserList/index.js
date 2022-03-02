@@ -13,7 +13,7 @@ function UserList(props) {
 	} = props;
 	return (
 		<tr htmlFor={userDetails.id}>
-			<td>
+			<td className='check-box-input-field'>
 				<input
 					type='checkbox'
 					id={userDetails.id}
@@ -22,6 +22,7 @@ function UserList(props) {
 					onChange={(e) => {
 						handleCheckInput(e);
 					}}
+					className=''
 				/>
 			</td>
 			<td>{userDetails.name}</td>

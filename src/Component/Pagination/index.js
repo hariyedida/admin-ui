@@ -61,6 +61,7 @@ class Pagination extends Component {
 					<button
 						type='button'
 						onClick={this.updatePageChange}
+						className='pagination-button'
 						value={eachPage}
 					>
 						{eachPage}
@@ -99,15 +100,6 @@ class Pagination extends Component {
 				test = renderPagesList;
 				break;
 		}
-		// test =
-		// 	totalPages > 5 && activePage < totalPages - 3 ? (
-		// 		<>
-		// 			{renderPagesList}
-		// 			<li>...</li>
-		// 		</>
-		// 	) : (
-		// 		renderPagesList
-		// 	);
 
 		return (
 			<ul>
@@ -116,12 +108,14 @@ class Pagination extends Component {
 						type='button'
 						onClick={this.updatePageChange}
 						value={"<<"}
+						className='pagination-button'
 					>{`<<`}</button>
 				</li>
 				<li>
 					<button
 						type='button'
 						onClick={this.updatePageChange}
+						className='pagination-button'
 						value={"<"}
 					>{`<`}</button>
 				</li>
@@ -130,6 +124,7 @@ class Pagination extends Component {
 					<button
 						type='button'
 						onClick={this.updatePageChange}
+						className='pagination-button'
 						value={">"}
 					>{`>`}</button>
 				</li>
@@ -137,6 +132,7 @@ class Pagination extends Component {
 					<button
 						type='button'
 						onClick={this.updatePageChange}
+						className='pagination-button'
 						value={">>"}
 					>{`>>`}</button>
 				</li>
