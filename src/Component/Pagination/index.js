@@ -8,12 +8,13 @@ class Pagination extends Component {
 		this.setPages();
 	};
 
+	//
 	setPages = () => {
-		const { pages } = this.state;
 		let { totalPages, activePage } = this.props;
 		[totalPages, activePage] = [totalPages, activePage].map(Number);
 		let updatePages = [];
 
+		// if total number of pages are greater than 5 render only 5 page numbers in surrounding with current page are rendered
 		if (totalPages > 5) {
 			switch (true) {
 				case activePage >= 1 && activePage < 3:
@@ -37,12 +38,14 @@ class Pagination extends Component {
 					break;
 			}
 		} else {
+			// if total pages are lessthan or equalto 5 render all page numbers at once
 			updatePages = [...Array(totalPages).keys()];
 			updatePages = updatePages.map((eachPage) => eachPage + 1);
 		}
 		this.setState({ pages: [...updatePages], activePage });
 	};
 
+	//  change page
 	updatePageChange = (event) => {
 		this.setPages();
 		const { handlePageChange } = this.props;
@@ -53,6 +56,7 @@ class Pagination extends Component {
 		const { pages, activePage } = this.state;
 		let { totalPages } = this.props;
 
+		// highlight current page
 		const renderPagesList = pages.map((eachPage) => {
 			const activePageClass =
 				eachPage === parseInt(activePage, 10) ? "active" : " ";
@@ -69,10 +73,13 @@ class Pagination extends Component {
 				</li>
 			);
 		});
-		let test = <></>;
+
+		// if page numbers are more to display, excess page nnumbers are displayed as "..."
+		// on left/right/either side of rendered page numbers
+		let displayPages = <></>;
 		switch (true) {
 			case totalPages > 5 && activePage < totalPages - 3 && activePage > 3:
-				test = (
+				displayPages = (
 					<>
 						<li>...</li>
 						{renderPagesList}
@@ -81,7 +88,7 @@ class Pagination extends Component {
 				);
 				break;
 			case totalPages > 5 && activePage > 3:
-				test = (
+				displayPages = (
 					<>
 						<li>...</li>
 						{renderPagesList}
@@ -89,7 +96,7 @@ class Pagination extends Component {
 				);
 				break;
 			case totalPages > 5 && activePage < totalPages - 3:
-				test = (
+				displayPages = (
 					<>
 						{renderPagesList}
 						<li>...</li>
@@ -97,10 +104,11 @@ class Pagination extends Component {
 				);
 				break;
 			default:
-				test = renderPagesList;
+				displayPages = renderPagesList;
 				break;
 		}
 
+		// render pagination navigation and page number with page numbers
 		return (
 			<ul>
 				<li>
@@ -119,7 +127,7 @@ class Pagination extends Component {
 						value={"<"}
 					>{`<`}</button>
 				</li>
-				{test}
+				{displayPages}
 				<li>
 					<button
 						type='button'

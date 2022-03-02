@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import apiStatusConstants from "../API_Status_Constants";
 import Loader from "react-loader-spinner";
-// import Pagination from "./Pagination";
 import UserDetails from "./UserDetails";
 
 class FetchApi extends Component {
@@ -14,6 +13,7 @@ class FetchApi extends Component {
 		this.getAllUserDetails();
 	};
 
+	//  fetch data and store to the state variable
 	getAllUserDetails = async () => {
 		this.setState({ apiStatus: apiStatusConstants.inProgress });
 		const apiUrl = `https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json`;
@@ -37,11 +37,13 @@ class FetchApi extends Component {
 		}
 	};
 
+	//  render the fetched data
 	renderSuccesAdminUi = () => {
 		const { userList, totalPages } = this.state;
 		return <UserDetails userList={userList} totalPages={totalPages} />;
 	};
 
+	// if data fetching failed
 	renderFailureView = () => (
 		<div>
 			<p>failure</p>
@@ -49,12 +51,14 @@ class FetchApi extends Component {
 		</div>
 	);
 
+	// render loader while fetching data
 	renderLoadingView = () => (
-		<div>
-			<Loader type='Oval' color='#f7931e' height='50' width='50' />
+		<div className='loader-container'>
+			<Loader type='Oval' color='#475569' height='50' width='50' />
 		</div>
 	);
 
+	// render UI based on data fetching api status
 	renderAdminUiPage = () => {
 		const { apiStatus } = this.state;
 		switch (apiStatus) {

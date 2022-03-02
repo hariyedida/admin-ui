@@ -1,4 +1,3 @@
-import { v4 as uuidV4 } from "uuid";
 import React from "react";
 import { FiEdit } from "react-icons/fi";
 import { AiOutlineDelete } from "react-icons/ai";

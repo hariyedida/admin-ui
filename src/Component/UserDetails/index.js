@@ -25,11 +25,10 @@ class UserDetails extends Component {
 		this.updateUIData();
 	};
 
+	// calculate total number of pages based on fetched data and page limit and store the data into state variable
 	updateUIData = () => {
 		const { fetchUserList, activePage } = this.state;
 		const Limit = 10;
-		console.log(fetchUserList);
-
 		const newItemsStart = (activePage - 1) * Limit;
 		const totalPages = Math.ceil(fetchUserList.length / Limit);
 		this.setState(
@@ -43,11 +42,13 @@ class UserDetails extends Component {
 		);
 	};
 
+	// load data required to render on the page
 	updatedFetchedList = () => {
 		const { fetchUserList, itemsStart, itemsEnd } = this.state;
 		this.setState({ userList: fetchUserList.slice(itemsStart, itemsEnd) });
 	};
 
+	// filter the data based on the user search input
 	filterUserList = () => {
 		const { searchInput, fetchUserList } = this.state;
 		let serachUserList = fetchUserList;
@@ -66,6 +67,7 @@ class UserDetails extends Component {
 		);
 	};
 
+	// updated data if details delted from list
 	UpdateList = () => {
 		const { fetchUserList, deletedUserItems } = this.state;
 		const newUserList = fetchUserList.filter(
@@ -75,14 +77,17 @@ class UserDetails extends Component {
 		this.setState({ fetchUserList: newUserList }, this.updateUIData);
 	};
 
+	// read user search input and filter the data based on input query
 	onChangeSearchInput = (event) => {
 		this.setState({ searchInput: event.target.value }, this.filterUserList());
 	};
 
+	// clear search input and restore the user table
 	onClickClearSearch = () => {
 		this.setState({ fetchUserList: this.props.userList }, this.updateUIData);
 	};
 
+	// read user details which user want to edit
 	onClickEditUserDetails = (userDetails) => {
 		this.setState({
 			editUserDataId: userDetails.id,
@@ -90,6 +95,7 @@ class UserDetails extends Component {
 		});
 	};
 
+	// read edited fields from user input
 	onChangeUserFormDetails = (event) => {
 		event.preventDefault();
 		const { updateUserData } = this.state;
@@ -101,9 +107,10 @@ class UserDetails extends Component {
 		this.setState({ updateUserData: newUserDetails });
 	};
 
+	// save edited details into state
 	saveEditedUserDetails = (event) => {
 		event.preventDefault();
-		const { updateUserData, userList, fetchUserList } = this.state;
+		const { updateUserData, fetchUserList } = this.state;
 		const newUserList = [...fetchUserList];
 		const updateUserIndex = newUserList.findIndex(
 			(eachUser) => eachUser.id === updateUserData.id
@@ -116,23 +123,12 @@ class UserDetails extends Component {
 		);
 	};
 
+	// cancel editing with out saving data
 	cancelEditUserDetails = () => {
 		this.setState({ editUserDataId: null });
 	};
 
-	onClickDeleteUserDetails = (id) => {
-		const { userList } = this.state;
-		let newUserList = [];
-		newUserList = userList.filter((eachId) => eachId.id !== id);
-		this.setState(
-			{
-				userList: newUserList,
-				deletedUserItems: id,
-			},
-			this.UpdateList
-		);
-	};
-
+	// check/uncheck all users when user clicks select all check box
 	selectAllusers = () => {
 		const { userList } = this.state;
 		this.setState(
@@ -150,6 +146,7 @@ class UserDetails extends Component {
 		);
 	};
 
+	// check/uncheck select all check box
 	handleAllCheckInput = () => {
 		this.setState((prevState) => {
 			return {
@@ -158,6 +155,7 @@ class UserDetails extends Component {
 		}, this.selectAllusers());
 	};
 
+	// check/uncheck select all check box based on items checked in the page
 	updateAllSelectCheckBox = () => {
 		const { userList } = this.state;
 		const allSelected = userList.map((eachUser) => eachUser.checked);
@@ -170,6 +168,7 @@ class UserDetails extends Component {
 		}
 	};
 
+	// check/uncheck individual user details
 	handleCheckInput = (event) => {
 		const id = event.target.id;
 		this.setState((prevState) => {
@@ -183,6 +182,24 @@ class UserDetails extends Component {
 		}, this.updateAllSelectCheckBox);
 	};
 
+	// delete selected users details from array
+	deleteSelectedUsers = () => {
+		this.setState((prevState) => {
+			return {
+				userList: prevState.userList.filter(
+					(userDetails) => !userDetails.checked
+				),
+				isCheckedAllUsers: false,
+				deletedUserItems: [
+					...prevState.userList.map((eachUser) => {
+						return eachUser.checked === true ? eachUser : "";
+					}),
+				],
+			};
+		}, this.updateFetchedList);
+	};
+
+	// navigate to next/previous/first/last page by user action
 	handlePageChange = (event) => {
 		const { totalPages, activePage } = this.state;
 		switch (event.target.value) {
@@ -212,6 +229,21 @@ class UserDetails extends Component {
 		}
 	};
 
+	//store delete item id and data to filter the data
+	onClickDeleteUserDetails = (id) => {
+		const { userList } = this.state;
+		let newUserList = [];
+		newUserList = userList.filter((eachId) => eachId.id !== id);
+		this.setState(
+			{
+				userList: newUserList,
+				deletedUserItems: id,
+			},
+			this.UpdateList
+		);
+	};
+
+	// filter the data to remove deleted item from array
 	updateFetchedList = () => {
 		const { deletedUserItems, fetchUserList } = this.state;
 		const userId = deletedUserItems.map((eachId) => eachId.id);
@@ -221,29 +253,12 @@ class UserDetails extends Component {
 		this.setState({ fetchUserList: [...updatedUserList] }, this.updateUIData);
 	};
 
-	deleteSelectedUsers = () => {
-		this.setState((prevState) => {
-			return {
-				userList: prevState.userList.filter(
-					(userDetails) => !userDetails.checked
-				),
-				isCheckedAllUsers: false,
-				deletedUserItems: [
-					...prevState.userList.map((eachUser) => {
-						return eachUser.checked === true ? eachUser : "";
-					}),
-				],
-			};
-		}, this.updateFetchedList);
-	};
-
 	render() {
 		const {
 			userList,
 			searchInput,
 			editUserDataId,
 			updateUserData,
-			checkedUserIdDict,
 			totalPages,
 			activePage,
 			isCheckedAllUsers,
@@ -253,6 +268,7 @@ class UserDetails extends Component {
 			<div className='admin-ui'>
 				<form onSubmit={this.saveEditedUserDetails}>
 					<div className='user-field-search-input-container'>
+						{/* search intput */}
 						<input
 							type='search'
 							value={searchInput}
@@ -260,6 +276,7 @@ class UserDetails extends Component {
 							placeholder='search by name,email,role'
 							className='user-field-search-input'
 						/>
+						{/* button to clear search input and restore the data */}
 						<button
 							type='button'
 							onClick={this.onClickClearSearch}
@@ -268,10 +285,13 @@ class UserDetails extends Component {
 							clear
 						</button>
 					</div>
+					{/* user details are rendered in table */}
 					<table>
+						{/* table header */}
 						<thead>
 							<tr>
 								<th>
+									{/* checkbox input to select all displayed users  */}
 									<input
 										type='checkbox'
 										id='all'
@@ -287,44 +307,54 @@ class UserDetails extends Component {
 							</tr>
 						</thead>
 						<tbody>
-							{userList.map((eachUser) => {
-								return (
-									<>
-										{editUserDataId === eachUser.id ? (
-											<EditUserDetails
-												key={eachUser.id}
-												userDetails={updateUserData}
-												onChangeUserFormDetails={
-													this.onChangeUserFormDetails
-												}
-												cancelEditUserDetails={
-													this.cancelEditUserDetails
-												}
-											/>
-										) : (
-											<UserList
-												key={eachUser.id}
-												userDetails={eachUser}
-												onClickEditUserDetails={
-													this.onClickEditUserDetails
-												}
-												onClickDeleteUserDetails={
-													this.onClickDeleteUserDetails
-												}
-												handleCheckInput={this.handleCheckInput}
-												isChecked={
-													checkedUserIdDict[eachUser.id] === true
-														? true
-														: false
-												}
-											/>
-										)}
-									</>
-								);
-							})}
+							{/*table body */}
+							{/* user details are rendered in pagination */}
+							{userList.length > 0 ? (
+								<>
+									{userList.map((eachUser) => {
+										return (
+											<>
+												{/* editing user details */}
+												{editUserDataId === eachUser.id ? (
+													<EditUserDetails
+														key={eachUser.id}
+														userDetails={updateUserData}
+														onChangeUserFormDetails={
+															this.onChangeUserFormDetails
+														}
+														cancelEditUserDetails={
+															this.cancelEditUserDetails
+														}
+													/>
+												) : (
+													// non editing user details
+													<UserList
+														key={eachUser.id}
+														userDetails={eachUser}
+														onClickEditUserDetails={
+															this.onClickEditUserDetails
+														}
+														onClickDeleteUserDetails={
+															this.onClickDeleteUserDetails
+														}
+														handleCheckInput={
+															this.handleCheckInput
+														}
+													/>
+												)}
+											</>
+										);
+									})}
+								</>
+							) : (
+								//  if user list is empty either by no search results
+								// or no users in the array no results text is displayed
+								<h1>No results</h1>
+							)}
 						</tbody>
 					</table>
 				</form>
+				{/* button to delete selected users */}
 				<div className='delete-use-details-button-container'>
 					<button
 						type='button'
@@ -335,6 +365,7 @@ class UserDetails extends Component {
 					</button>
 				</div>
 
+				{/* pagination */}
 				<div className='pagination-container'>
 					<Pagination
 						totalPages={totalPages}
