@@ -8,7 +8,7 @@ class Pagination extends Component {
 		this.setPages();
 	};
 
-	//
+	//calulate total pages
 	setPages = () => {
 		let { totalPages, activePage } = this.props;
 		[totalPages, activePage] = [totalPages, activePage].map(Number);
@@ -61,7 +61,7 @@ class Pagination extends Component {
 			const activePageClass =
 				eachPage === parseInt(activePage, 10) ? "active" : " ";
 			return (
-				<li className={activePageClass}>
+				<li className={activePageClass} key={eachPage}>
 					<button
 						type='button'
 						onClick={this.updatePageChange}

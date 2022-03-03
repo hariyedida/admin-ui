@@ -4,7 +4,7 @@ import { FcCancel } from "react-icons/fc";
 
 // editing user details
 function EditUserDetails(props) {
-	const { userDetails, onChangeUserFormDetails, cancelEditUserDetails } =
+	const { editedUserDetails, onChangeUserFormDetails, cancelEditUserDetails } =
 		props;
 	return (
 		<tr>
@@ -18,7 +18,7 @@ function EditUserDetails(props) {
 					required='*required'
 					placeholder='Enter a name...'
 					name='name'
-					value={userDetails.name}
+					value={editedUserDetails.name}
 					onChange={onChangeUserFormDetails}
 				/>
 			</td>
@@ -29,7 +29,7 @@ function EditUserDetails(props) {
 					required='*required'
 					placeholder='Enter an email...'
 					name='email'
-					value={userDetails.email}
+					value={editedUserDetails.email}
 					onChange={onChangeUserFormDetails}
 				/>
 			</td>
@@ -40,7 +40,7 @@ function EditUserDetails(props) {
 					required='*required'
 					placeholder='Enter a role...'
 					name='role'
-					value={userDetails.role}
+					value={editedUserDetails.role}
 					onChange={onChangeUserFormDetails}
 				/>
 			</td>

@@ -2,7 +2,6 @@ import "./index.css";
 
 import { Component } from "react";
 import UserList from "../UserList";
-import EditUserDetails from "../EditUserDetails";
 import Pagination from "../Pagination";
 
 class UserDetails extends Component {
@@ -311,45 +310,34 @@ class UserDetails extends Component {
 							{/* user details are rendered in pagination */}
 							{userList.length > 0 ? (
 								<>
-									{userList.map((eachUser) => {
-										return (
-											<>
-												{/* editing user details */}
-												{editUserDataId === eachUser.id ? (
-													<EditUserDetails
-														key={eachUser.id}
-														userDetails={updateUserData}
-														onChangeUserFormDetails={
-															this.onChangeUserFormDetails
-														}
-														cancelEditUserDetails={
-															this.cancelEditUserDetails
-														}
-													/>
-												) : (
-													// non editing user details
-													<UserList
-														key={eachUser.id}
-														userDetails={eachUser}
-														onClickEditUserDetails={
-															this.onClickEditUserDetails
-														}
-														onClickDeleteUserDetails={
-															this.onClickDeleteUserDetails
-														}
-														handleCheckInput={
-															this.handleCheckInput
-														}
-													/>
-												)}
-											</>
-										);
-									})}
+									{userList.map((eachUser) => (
+										<UserList
+											key={eachUser.id}
+											editUserDataId={editUserDataId}
+											editedUserDetails={updateUserData}
+											userDetails={eachUser}
+											onClickEditUserDetails={
+												this.onClickEditUserDetails
+											}
+											onClickDeleteUserDetails={
+												this.onClickDeleteUserDetails
+											}
+											handleCheckInput={this.handleCheckInput}
+											onChangeUserFormDetails={
+												this.onChangeUserFormDetails
+											}
+											cancelEditUserDetails={
+												this.cancelEditUserDetails
+											}
+										/>
+									))}
 								</>
 							) : (
 								//  if user list is empty either by no search results
 								// or no users in the array no results text is displayed
-								<h1>No results</h1>
+								<tr>
+									<td>No results</td>
+								</tr>
 							)}
 						</tbody>
 					</table>
