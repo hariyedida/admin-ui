@@ -1,6 +1,6 @@
 .admin-ui {
 	height: 100vh;
-	margin: 20px;
+	margin: 20px 5px 20px 5px;
 }
 
 .pagination-container {
@@ -47,6 +47,51 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
+}
+
+table {
+	border-collapse: collapse;
+	width: 100%;
+	table-layout: auto;
+}
+
+th {
+	text-align: left;
+	height: 30px;
+	vertical-align: middle;
+	width: 20;
+}
+
+tr {
+	border-bottom: solid 1px rgb(202, 200, 200);
+}
+
+td {
+	width: fit-content;
+	margin-right: 10px;
+	padding-right: 10px;
+	height: 40px;
+	word-break: break-all;
+}
+
+@media screen and (min-width: 768px) {
+	th {
+		text-align: left;
+		height: 30px;
+		vertical-align: middle;
+		max-width: 120px;
+	}
+
+	td {
+		margin-right: 10px;
+		padding-right: 10px;
+		height: 40px;
+	}
+
+	.admin-ui {
+		height: 100vh;
+		margin: 20px;
+	}
 }
 
 .delete-use-details-button-container {
