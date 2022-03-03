@@ -7,40 +7,43 @@ class FetchApi extends Component {
 	state = {
 		apiStaus: apiStatusConstants.initial,
 		userList: [],
-		activePage: 1,
-		totalPages: 1,
 	};
 
 	componentDidMount = () => {
 		this.getAllUserDetails();
 	};
 
+	//  fetch data and store to the state variable
 	getAllUserDetails = async () => {
-		const { activePage, serachInput } = this.state;
-		const Limit = 10;
-		const Offset = (activePage - 1) * Limit;
 		this.setState({ apiStatus: apiStatusConstants.inProgress });
-
 		const apiUrl = `https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json`;
 		const response = await fetch(apiUrl);
 		if (response.ok) {
 			const fetchedData = await response.json();
-			const totalPages = Math.ceil(fetchedData.length / Limit);
+			const updatedData = fetchedData.map((eachUser) => ({
+				email: eachUser.email,
+				id: eachUser.id,
+				name: eachUser.name,
+				role: eachUser.role,
+				checked: false,
+			}));
+
 			this.setState({
 				apiStatus: apiStatusConstants.success,
-				userList: fetchedData,
-				totalPages,
+				userList: [...updatedData],
 			});
 		} else {
 			this.setState({ apiStatus: apiStatusConstants.failure });
 		}
 	};
 
+	//  render the fetched data
 	renderSuccesAdminUi = () => {
-		const { userList } = this.state;
-		return <UserDetails userList={userList} />;
+		const { userList, totalPages } = this.state;
+		return <UserDetails userList={userList} totalPages={totalPages} />;
 	};
 
+	// if data fetching failed
 	renderFailureView = () => (
 		<div>
 			<p>failure</p>
@@ -48,12 +51,14 @@ class FetchApi extends Component {
 		</div>
 	);
 
+	// render loader while fetching data
 	renderLoadingView = () => (
-		<div>
-			<Loader type='Oval' color='#f7931e' height='50' width='50' />
+		<div className='loader-container'>
+			<Loader type='Oval' color='#475569' height='50' width='50' />
 		</div>
 	);
 
+	// render UI based on data fetching api status
 	renderAdminUiPage = () => {
 		const { apiStatus } = this.state;
 		switch (apiStatus) {
